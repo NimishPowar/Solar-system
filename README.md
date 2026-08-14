@@ -2,6 +2,8 @@
 
 An interactive, browser-based 3D visualization of the solar system built with Three.js. Drag to orbit, scroll to zoom, and click any planet to inspect it.
 
+**Live Demo:** [nimishpowar.github.io/Solar-system](https://nimishpowar.github.io/Solar-system/)
+
 ## Features
 
 - **3D solar system** rendered with [Three.js](https://threejs.org/)
@@ -73,4 +75,4 @@ No build step or dependencies to install — it's a static site.
 
 ## License
 
-No license specified yet — consider adding one (e.g., MIT) if you intend for others to use or contribute.
+Licensed under the [MIT License](LICENSE).
