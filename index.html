@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SolarView — Interactive Solar System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+  <header class="hud-top">
+    <div class="brand">
+      <span class="brand-mark">☉</span>
+      <span class="brand-name">SolarView</span>
+    </div>
+    <p class="brand-sub">drag to orbit · scroll to zoom · click a body to inspect it</p>
+  </header>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-mark">☉</div>
+    <div class="loading-bar"><div class="loading-fill" id="loadingFill"></div></div>
+    <div class="loading-text"><span id="loadingPct">0%</span> — loading textures</div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <div class="hud-bottom">
+    <button class="hud-btn" id="playPause" aria-label="Pause orbits">
+      <svg id="iconPause" viewBox="0 0 24 24" width="16" height="16"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+      <svg id="iconPlay" viewBox="0 0 24 24" width="16" height="16" style="display:none"><polygon points="6,4 20,12 6,20"></polygon></svg>
+      <span id="playPauseLabel">Pause</span>
+    </button>
+
+    <button class="hud-btn small" id="reverseBtn" aria-label="Reverse time direction" title="Reverse time">⏪</button>
+
+    <div class="hud-rates" id="hudRates">
+      <button class="rate-btn active" data-rate="1">Real</button>
+      <button class="rate-btn" data-rate="3600">1h/s</button>
+      <button class="rate-btn" data-rate="86400">1d/s</button>
+      <button class="rate-btn" data-rate="604800">1wk/s</button>
+      <button class="rate-btn" data-rate="2629800">1mo/s</button>
+      <button class="rate-btn" data-rate="31557600">1yr/s</button>
+    </div>
+
+    <div class="hud-zoom">
+      <button class="hud-btn small" id="zoomOut" aria-label="Zoom out">−</button>
+      <button class="hud-btn small" id="zoomReset" aria-label="Reset zoom">Reset</button>
+      <button class="hud-btn small" id="zoomIn" aria-label="Zoom in">+</button>
+    </div>
+  </div>
+
+  <div class="hud-clock" id="hudClock">
+    <div class="clock-date" id="clockDate">—</div>
+    <div class="clock-time" id="clockTime">00:00:00 IST</div>
+    <button class="now-btn" id="nowBtn" title="Jump back to the real current time">Now</button>
+  </div>
+
+  <aside class="info-panel" id="infoPanel">
+    <button class="info-close" id="infoClose" aria-label="Close">×</button>
+    <div class="info-eyebrow" id="infoEyebrow">SELECTED BODY</div>
+    <h2 id="infoName">—</h2>
+    <p class="info-tagline" id="infoTagline"></p>
+    <dl class="info-stats" id="infoStats"></dl>
+  </aside>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
