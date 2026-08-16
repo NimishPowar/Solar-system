@@ -19,7 +19,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
    genuinely to-scale in time, not just in space.
    ========================================================= */
 const EARTH_R = 0.6;
-const DIST_SCALE = 11.2;
+const DIST_SCALE = 15;
 const cbrt = Math.cbrt;
 
 const BODIES = [
@@ -31,8 +31,7 @@ const BODIES = [
   { key: 'jupiter', img: 'jupiter.jpg', diameterRatio: 11.21, au: 5.20,  periodDays: 4332.59, spinHours: 9.925,  axialTilt: 0.05, eccentricity: 0.0484, inclinationDeg: 1.30 },
   { key: 'saturn',  img: 'saturn.jpg',  diameterRatio: 9.45,  au: 9.58,  periodDays: 10759.22,spinHours: 10.656, axialTilt: 0.47, eccentricity: 0.0539, inclinationDeg: 2.49, ring: true },
   { key: 'uranus',  img: 'uranus.jpg',  diameterRatio: 4.01,  au: 19.20, periodDays: 30688.5, spinHours: -17.24, axialTilt: 1.71, eccentricity: 0.0472, inclinationDeg: 0.77 },
-  { key: 'neptune', img: 'neptune.jpg', diameterRatio: 3.88,  au: 30.05, periodDays: 60182,   spinHours: 16.11,  axialTilt: 0.49, eccentricity: 0.0086, inclinationDeg: 1.77 },
-  { key: 'pluto',   img: 'pluto.png',   diameterRatio: 0.186, au: 39.50, periodDays: 90560,   spinHours: 153.3,  axialTilt: 2.13, eccentricity: 0.2488, inclinationDeg: 17.16 }
+  { key: 'neptune', img: 'neptune.jpg', diameterRatio: 3.88,  au: 30.05, periodDays: 60182,   spinHours: 16.11,  axialTilt: 0.49, eccentricity: 0.0086, inclinationDeg: 1.77 }
 ];
 
 BODIES.forEach((b) => {
@@ -63,9 +62,7 @@ const BODY_INFO = {
   uranus: { name: 'Uranus', tagline: 'An ice giant that rotates on its side, likely from an ancient collision.',
     stats: { 'Distance from Sun': '2.87B km', 'Day Length': '17h 14m (retrograde)', 'Moons': '27+', 'Fun Fact': 'Its axial tilt is roughly 98 degrees.' } },
   neptune: { name: 'Neptune', tagline: 'The windiest planet, with supersonic storms racing across its surface.',
-    stats: { 'Distance from Sun': '4.50B km', 'Day Length': '16h 6m', 'Moons': '14+', 'Fun Fact': 'Winds can exceed 2,000 km/h.' } },
-  pluto: { name: 'Pluto', tagline: 'A dwarf planet in the Kuiper Belt, reclassified from full planet status in 2006.',
-    stats: { 'Distance from Sun': '5.9B km (avg)', 'Day Length': '6.4 Earth days', 'Moons': '5 (largest: Charon)', 'Fun Fact': "Its orbit is so elliptical it briefly crosses Neptune's." } }
+    stats: { 'Distance from Sun': '4.50B km', 'Day Length': '16h 6m', 'Moons': '14+', 'Fun Fact': 'Winds can exceed 2,000 km/h.' } }
 };
 
 /* ---------- renderer / scene / camera ---------- */
@@ -73,7 +70,7 @@ const stage = document.getElementById('stage');
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(55, stage.clientWidth / stage.clientHeight, 0.05, 3000);
-const defaultCamPos = new THREE.Vector3(0, 65, 155);
+const defaultCamPos = new THREE.Vector3(0, 70, 165);
 camera.position.copy(defaultCamPos);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -330,13 +327,14 @@ BODIES.forEach((b) => {
 });
 
 /* ---------- asteroid belt ---------- */
-function buildAsteroidBelt() {
+function buildAsteroidBelt(marsDist, jupiterDist) {
   const count = 500;
   const geo = new THREE.IcosahedronGeometry(0.08, 0);
   const mat = new THREE.MeshStandardMaterial({ color: 0x8a8478, roughness: 1 });
   const belt = new THREE.InstancedMesh(geo, mat, count);
   const dummy = new THREE.Object3D();
-  const innerR = 25.6 * 0.72, outerR = 25.6 * 0.92; // between Mars and Jupiter orbits
+  const innerR = marsDist + (jupiterDist - marsDist) * 0.35;
+  const outerR = marsDist + (jupiterDist - marsDist) * 0.75;
   for (let i = 0; i < count; i++) {
     const dist = innerR + Math.random() * (outerR - innerR);
     const angle = Math.random() * Math.PI * 2;
@@ -350,7 +348,9 @@ function buildAsteroidBelt() {
   scene.add(belt);
   return belt;
 }
-const asteroidBelt = buildAsteroidBelt();
+const marsBody = planets.find((p) => p.key === 'mars');
+const jupiterBody = planets.find((p) => p.key === 'jupiter');
+const asteroidBelt = buildAsteroidBelt(marsBody.distance, jupiterBody.distance);
 
 /* ---------- HUD: play / pause ---------- */
 const playPauseBtn = document.getElementById('playPause');
