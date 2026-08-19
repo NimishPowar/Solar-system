@@ -292,6 +292,21 @@ scene.add(new THREE.AmbientLight(0x3c4356, 0.35));
 const sunLight = new THREE.PointLight(0xfff2d0, 5.2, 0, 0.35);
 scene.add(sunLight);
 
+// Visual mode's light falloff was tuned for distances of tens of units.
+// True mode's distances are 50-100x larger, so with the same decay the
+// light barely reaches outer planets at all — they'd render essentially
+// unlit. Zero decay keeps every body properly lit regardless of how far
+// out its true orbit actually is.
+function applyLighting() {
+  if (scaleMode === 'true') {
+    sunLight.decay = 0;
+    sunLight.intensity = 3.4;
+  } else {
+    sunLight.decay = 0.35;
+    sunLight.intensity = 5.2;
+  }
+}
+
 /* ---------- marker sprite (keeps tiny/true-scale bodies clickable) ---------- */
 function markerTexture() {
   const size = 64;
@@ -500,6 +515,7 @@ buildAsteroidBelt();
 
 /* ---------- apply the active scale mode to every object's size/marker ---------- */
 function applyScaleMode() {
+  applyLighting();
   sunMesh.scale.setScalar(sceneRadiusForKm(SUN_RADIUS_KM));
   sunMarker.visible = scaleMode === 'true';
 
@@ -507,7 +523,7 @@ function applyScaleMode() {
     const radiusScene = sceneRadiusForKm(p.el.radiusKm);
     p.mesh.scale.setScalar(radiusScene);
     p.marker.visible = scaleMode === 'true';
-    p.label.position.set(0, radiusScene * (scaleMode === 'true' ? 40 : 1) + 0.4, 0);
+    p.label.position.set(0, scaleMode === 'true' ? radiusScene * 3 : radiusScene + 0.4, 0);
 
     if (p.atmoMesh) p.atmoMesh.scale.setScalar(radiusScene * 1.04);
     if (p.ringMesh) p.ringMesh.scale.setScalar(radiusScene);
@@ -521,7 +537,7 @@ function applyScaleMode() {
       const moonRadiusScene = sceneRadiusForKm(p.el.moon.radiusKm);
       p.moonMesh.scale.setScalar(moonRadiusScene);
       p.moonMarker.visible = scaleMode === 'true';
-      p.moonLabel.position.set(0, moonRadiusScene * (scaleMode === 'true' ? 40 : 1) + 0.25, 0);
+      p.moonLabel.position.set(0, scaleMode === 'true' ? moonRadiusScene * 3 : moonRadiusScene + 0.25, 0);
     }
   });
 
