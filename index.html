@@ -23,7 +23,7 @@
       <span class="brand-mark">☉</span>
       <span class="brand-name">SolarView</span>
     </div>
-    <p class="brand-sub">drag to orbit · scroll to zoom · click a body to inspect it</p>
+    <p class="brand-sub">drag to orbit · scroll to zoom · click a body · keys 1–8 / 0 to jump</p>
   </header>
 
   <div class="stage" id="stage"></div>
@@ -53,6 +53,8 @@
       <button class="rate-btn" data-rate="2629800">1mo/s</button>
       <button class="rate-btn" data-rate="31557600">1yr/s</button>
     </div>
+
+    <button class="hud-btn small" id="scaleModeBtn" title="Toggle between visual and true astronomical scale">Scale: Visual</button>
 
     <div class="hud-zoom">
       <button class="hud-btn small" id="zoomOut" aria-label="Zoom out">−</button>
